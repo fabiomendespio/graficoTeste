@@ -9,6 +9,7 @@ public class main {
 
         PixelCalc pixelcalc = new PixelCalc();
         ImageU imageu = new ImageU(pixelcalc);
+
 //        pc.setPixelsWidth(800);
 //        pc.setPixelsHeight(600);
 //        pc.setPixelsWidth(600);
@@ -19,8 +20,6 @@ public class main {
 //        pc.proporcao();
                 pixelcalc.Dados();
                 imageu.criaImagem();
-
-
     }
 }
 
