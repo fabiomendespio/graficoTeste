@@ -13,11 +13,11 @@ public class PixelCalc {
         this.Pixels_height = 600;
     }
 
-    public void setPixelsWidth (int Pixels_width){
+    public void setPixels_width(int Pixels_width){
         this.Pixels_width = Pixels_width;
     }
 
-    public void setPixelsHeight (int Pixels_height){
+    public void setPixels_height(int Pixels_height){
             this.Pixels_height = Pixels_height;
     }
 

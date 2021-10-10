@@ -10,14 +10,14 @@ public class TestGraph {
         PixelCalc pixelcalc = new PixelCalc();
         ImageU imageu = new ImageU(pixelcalc);
 
-//        pc.setPixelsWidth(800);
-//        pc.setPixelsHeight(600);
-//        pc.setPixelsWidth(600);
-//        pc.setPixelsHeight(900);
-//        pc.setDate();
-//                pc.setRatio(16,9);
-//                pc.setPixelsHeight(800);
-//        pc.setProportion();
+//        pixelcalc.setPixelsWidth(800);
+//        pixelcalc.setPixelsHeight(600);
+//        pixelcalc.setPixelsWidth(600);
+//        pixelcalc.setPixelsHeight(900);
+//        pixelcalc.setDate();
+//                pixelcalc.setRatio(16,9);
+//                pixelcalc.setPixelsHeight(800);
+//        pixelcalc.setProportion();
                 pixelcalc.setDate();
                 imageu.showImage();
 
