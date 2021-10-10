@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.awt.RenderingHints;
 
 
@@ -32,20 +31,20 @@ public class ImageU {
     double dfy;
     double pyr;
 
-    int eixoX;
-    int eixoY;
+    int xAxis;
+    int yAxis;
 
     String xLabel;
     String yLabel;
 
-    double porcentagem;
+    double percentage;
 
     BufferedImage report;
     Graphics2D render;
     PixelCalc pixelcalc;
 
     List<Double> auxList;
-    List<Point> pontos;
+    List<Point> pointList;
 
 
     public ImageU(PixelCalc pixelcalc) {
@@ -54,9 +53,9 @@ public class ImageU {
 
     public double getMaxValue() {
         double max = Double.MIN_VALUE;
-        for (int i = 0; i < auxList.size(); i++) {
-            if (auxList.get(i) > max) {
-                max = auxList.get(i);
+        for (Double aDouble : auxList) {
+            if (aDouble > max) {
+                max = aDouble;
             }
         }
         return max;
@@ -64,9 +63,9 @@ public class ImageU {
 
     public double getMinValue() {
         double min = Double.MAX_VALUE;
-        for (int i = 0; i < auxList.size(); i++) {
-            if (auxList.get(i) < min) {
-                min = auxList.get(i);
+        for (Double aDouble : auxList) {
+            if (aDouble < min) {
+                min = aDouble;
             }
         }
         return min;
@@ -84,39 +83,39 @@ public class ImageU {
         render.fillRect(0, 0, report.getWidth(), report.getHeight());
     }
 
-    public double margem() {
-        return report.getWidth() * this.porcentagem;
+    public double label() {
+        return report.getWidth() * this.percentage;
     }
 
-    public void whiteBrackground() {
+    public void whiteBackground() {
 
-        this.porcentagem = 0.05;
-        x0 = margem();
-        x1 = report.getWidth()  - margem() - 1;
-        y0 = margem() ;
+        this.percentage = 0.05;
+        x0 = label();
+        x1 = report.getWidth()  - label() - 1;
+        y0 = label() ;
         y1 = report.getHeight() - 1 ;
 
         render.setColor(Color.WHITE);
         render.fillRect((int) x0, (int) y0 - 15, (int) x1 - (int) x0 + 15, (int) y1 - (int) y0);
-        setTitulo();
+        setTitle();
     }
 
-    public void setTitulo(){
+    public void setTitle(){
         render.setColor(Color.BLACK);
-        render.drawString("Gráfico Rede Neural: TESTE" , (int) x0,  (int) y0 - 20);
+        render.drawString("Graphic Neural Network: TEST" , (int) x0,  (int) y0 - 20);
     }
 
-    public List<Double> valoresSaida() {
+    public List<Double> valuesSaida() {
         auxList = new ArrayList<>();
-        Random random = new Random();
+//        Random random = new Random();
 
-        eixoX = 10;
-        eixoY = 10;
-        double v = 2;
+        xAxis = 10;
+        yAxis = 10;
+//        double v = 2;
 
-//        for (int i = 0; i < eixoX; i++) {
+//        for (int i = 0; i < xAxis; i++) {
 //            v+=Math.abs(random.nextDouble())/10.0;
-//            auxList.add((random.nextDouble() * eixoY));
+//            auxList.add((random.nextDouble() * yAxis));
 
 //          auxList.add(v);
 
@@ -143,54 +142,50 @@ public class ImageU {
         auxList.add(4.0);
         auxList.add(7.0);
 
-
-
         return auxList;
     }
 
-    public double mapeamentoX() {
+    public void xMapping() {
         pxr = ((x - oix) * (dfx - dix) / (ofx - oix)) + dix;
-        return pxr;
     }
 
-    public void mapeamentoY() {
+    public void yMapping() {
         pyr = ((y - ofy) * (diy - dfy) / (oiy - ofy)) + dfy;
     }
 
-    public void eixoXY() {
-        porcentagem = 0.1;
+    public void setAxis() {
+        percentage = 0.1;
 
         render.setColor(Color.BLACK);
-        render.drawLine((int) x0 + 75, (int) y1 - (int) margem(), (int) x1, (int) y1 - (int) margem()); // eixo x
-        render.drawLine((int) x0 + (int) margem(), (int) y0, (int) x0 + (int) margem(), (int) y1 - 75); // eixo Y
-
+        render.drawLine((int) x0 + 75, (int) y1 - (int) label(), (int) x1, (int) y1 - (int) label()); // axis x
+        render.drawLine((int) x0 + (int) label(), (int) y0, (int) x0 + (int) label(), (int) y1 - 75); // axis Y
     }
 
-    public void criaGrade() {
+    public void setGrid() {
         Stroke oldStroke = render.getStroke();
         float[] dash = {2f, 0f, 2f};
         BasicStroke bs = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, dash, 2f);
         render.setStroke(bs);
 
-        porcentagem = 0.1;
+        percentage = 0.1;
 
         oix = 0;
         ofx = auxList.size();
-        dix = (int) (x0 + margem());
+        dix = (int) (x0 + label());
         dfx = x1;
 
         oiy = getMaxValue();
         ofy = getMinValue();
         diy = y0;
-        dfy = (int) (y1 - margem());
+        dfy = (int) (y1 - label());
 
         //X
         for (int i = 0; i < auxList.size(); i++) {
             x = i;
-            mapeamentoX();
+            xMapping();
             for (int j = 0; j < auxList.size() ; j++) {
                 render.setColor(Color.lightGray);
-                render.drawLine((int) pxr, (int) (y1 - margem()), (int) pxr, (int) y0);
+                render.drawLine((int) pxr, (int) (y1 - label()), (int) pxr, (int) y0);
 
                 if ((double) auxList.size() % ofx == 0) {
                     xLabel = Math.round(x) + "";
@@ -198,10 +193,10 @@ public class ImageU {
                     xLabel = Math.round(x * 100.0) / 100.0 + "";
                 }
                 FontMetrics metrics = render.getFontMetrics();
-                int labelWidthx = metrics.stringWidth(xLabel);
+                int labelWidth_x = metrics.stringWidth(xLabel);
 
                 render.setColor(Color.BLACK);
-                render.drawString(xLabel, (int) pxr - labelWidthx / 2 , (int) y1 - (int) margem() + metrics.getHeight() +5 );
+                render.drawString(xLabel, (int) pxr - labelWidth_x / 2 , (int) y1 - (int) label() + metrics.getHeight() +5 );
             }
         }
 
@@ -210,20 +205,20 @@ public class ImageU {
         y = getMinValue();
         for (int j = 0; j < 11; j++) {
 
-            mapeamentoY();
+            yMapping();
             for (int i = 0; i < 11; i++) {
                 render.setColor(Color.lightGray);
-                render.drawLine((int) (x0 + margem()), (int) pyr, (int) x1, (int) pyr);
+                render.drawLine((int) (x0 + label()), (int) pyr, (int) x1, (int) pyr);
 
 
                 yLabel = Math.round(y * 100.00) / 100.00 + "";
 
 
                 FontMetrics metrics = render.getFontMetrics();
-                int labelWidthy = metrics.stringWidth(yLabel);
+                int labelWidth_y = metrics.stringWidth(yLabel);
 
                 render.setColor(Color.BLACK);
-                render.drawString(yLabel, (int) x0 + (int) margem() - labelWidthy - 10,(int) pyr + metrics.getHeight()/2);
+                render.drawString(yLabel, (int) x0 + (int) label() - labelWidth_y - 10,(int) pyr + metrics.getHeight()/2);
             }
             y += ((getMaxValue() - getMinValue()) / 10);
 
@@ -231,61 +226,61 @@ public class ImageU {
         render.setStroke(oldStroke);
     }
 
-    public void criaLinhasPontos() {
-        pontos = new ArrayList<>();
-        porcentagem = 0.1;
+    public void setLinePoints() {
+        pointList = new ArrayList<>();
+        percentage = 0.1;
 
         oix = 0;
         ofx = auxList.size();
-        dix = (int) (x0 + margem() );
+        dix = (int) (x0 + label() );
         dfx = x1;
 
         oiy = getMaxValue();
         ofy = getMinValue();
         diy = y0;
-        dfy = (int) (y1 - margem());
+        dfy = (int) (y1 - label());
 
         for (int i = 0; i < auxList.size(); i++) {
             x = i;
-            mapeamentoX();
+            xMapping();
 
 
             for (int j = 0; j < auxList.size(); j++) {
                 y = auxList.get(i);
-                mapeamentoY();
+                yMapping();
             }
-            pontos.add(new Point((int) pxr, (int) pyr));
+            pointList.add(new Point((int) pxr, (int) pyr));
 
         }
 
-        for (int j = 0; j < pontos.size() - 1; j++) {
+        for (int j = 0; j < pointList.size() - 1; j++) {
             render.setColor(Color.blue);
-            render.drawLine(pontos.get(j).x, pontos.get(j).y, pontos.get(j + 1).x, pontos.get(j + 1).y);
+            render.drawLine(pointList.get(j).x, pointList.get(j).y, pointList.get(j + 1).x, pointList.get(j + 1).y);
         }
     }
 
-    public void criaPontos() {
+    public void setPoints() {
 
-        porcentagem = 0.1;
+        percentage = 0.1;
 
         oix = 0;
         ofx = auxList.size() ;
-        dix = (int) (x0 + margem() );
+        dix = (int) (x0 + label() );
         dfx = x1 ;
 
         oiy = getMaxValue();
         ofy = getMinValue();
         diy = y0;
-        dfy = (int) (y1  - margem());
+        dfy = (int) (y1  - label());
 
         for (int i = 0; i < auxList.size(); i++) {
             x = i;
-            mapeamentoX();
+            xMapping();
 
 
             for (int j = 0; j < auxList.size(); j++) {
                 y = auxList.get(i);
-                mapeamentoY();
+                yMapping();
 
                 render.setColor(Color.RED);
                 render.fillOval((int) pxr - 4, (int) pyr - 4, 8, 8);
@@ -301,15 +296,15 @@ public class ImageU {
         }
     }
 
-    public void criaImagem() {
-        valoresSaida();
+    public void showImage() {
+        valuesSaida();
 
         background();
-        whiteBrackground();
-        criaGrade();
-        eixoXY();
-        criaLinhasPontos();
-        criaPontos();
+        whiteBackground();
+        setGrid();
+        setAxis();
+        setLinePoints();
+        setPoints();
         saveImage();
     }
 

@@ -3,7 +3,7 @@ package main;
 import Util.ImageU;
 import Util.PixelCalc;
 
-public class main {
+public class TestGraph {
 
         public static void main (String []args) {
 
@@ -19,7 +19,7 @@ public class main {
 //                pc.setPixelsHeight(800);
 //        pc.proporcao();
                 pixelcalc.Dados();
-                imageu.criaImagem();
+                imageu.showImage();
 
 
     }
