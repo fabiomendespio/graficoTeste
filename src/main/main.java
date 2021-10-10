@@ -20,6 +20,8 @@ public class main {
 //        pc.proporcao();
                 pixelcalc.Dados();
                 imageu.criaImagem();
+
+
     }
 }
 

@@ -1,6 +1,5 @@
 package Util;
 
-import Util.PixelCalc;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -37,10 +36,7 @@ public class ImageU {
     int eixoY;
 
     String xLabel;
-    double w = 1;
-
     String yLabel;
-    int z = 1;
 
     double porcentagem;
 
@@ -50,6 +46,7 @@ public class ImageU {
 
     List<Double> auxList;
     List<Point> pontos;
+
 
     public ImageU(PixelCalc pixelcalc) {
         this.pixelcalc = pixelcalc;
@@ -93,18 +90,15 @@ public class ImageU {
 
     public void whiteBrackground() {
 
-
         this.porcentagem = 0.05;
         x0 = margem();
         x1 = report.getWidth()  - margem() - 1;
         y0 = margem() ;
         y1 = report.getHeight() - 1 ;
 
-
         render.setColor(Color.WHITE);
         render.fillRect((int) x0, (int) y0 - 15, (int) x1 - (int) x0 + 15, (int) y1 - (int) y0);
         setTitulo();
-
     }
 
     public void setTitulo(){
@@ -135,9 +129,9 @@ public class ImageU {
         auxList.add(2.0);
         auxList.add(5.0);
         auxList.add(3.0);
+        auxList.add(2.0);
         auxList.add(4.0);
-        auxList.add(4.0);
-        auxList.add(1.0);
+        auxList.add(7.0);
         auxList.add(3.0);
         auxList.add(2.0);
         auxList.add(4.0);
@@ -145,15 +139,18 @@ public class ImageU {
         auxList.add(2.0);
         auxList.add(5.0);
         auxList.add(3.0);
+        auxList.add(2.0);
         auxList.add(4.0);
-        auxList.add(4.0);
-        auxList.add(1.0);
+        auxList.add(7.0);
+
+
 
         return auxList;
     }
 
-    public void mapeamentoX() {
+    public double mapeamentoX() {
         pxr = ((x - oix) * (dfx - dix) / (ofx - oix)) + dix;
+        return pxr;
     }
 
     public void mapeamentoY() {
@@ -170,16 +167,15 @@ public class ImageU {
     }
 
     public void criaGrade() {
-
         Stroke oldStroke = render.getStroke();
-        float[] dash = { 2f, 0f, 2f };
+        float[] dash = {2f, 0f, 2f};
         BasicStroke bs = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, dash, 2f);
         render.setStroke(bs);
 
         porcentagem = 0.1;
 
         oix = 0;
-        ofx = auxList.size()/2;
+        ofx = auxList.size();
         dix = (int) (x0 + margem());
         dfx = x1;
 
@@ -188,24 +184,18 @@ public class ImageU {
         diy = y0;
         dfy = (int) (y1 - margem());
 
-
-
-
-        double auxFixa = (double) auxList.size() / ofx;
-        w = auxFixa;
-
         //X
-        x = 0;
         for (int i = 0; i < auxList.size(); i++) {
+            x = i;
             mapeamentoX();
-            for (int a = 0; a < auxList.size() ; a++) {
+            for (int j = 0; j < auxList.size() ; j++) {
                 render.setColor(Color.lightGray);
                 render.drawLine((int) pxr, (int) (y1 - margem()), (int) pxr, (int) y0);
 
                 if ((double) auxList.size() % ofx == 0) {
-                    xLabel = Math.round(w) + "";
+                    xLabel = Math.round(x) + "";
                 } else {
-                    xLabel = Math.round(w * 100.0) / 100.0 + "";
+                    xLabel = Math.round(x * 100.0) / 100.0 + "";
                 }
                 FontMetrics metrics = render.getFontMetrics();
                 int labelWidthx = metrics.stringWidth(xLabel);
@@ -213,13 +203,11 @@ public class ImageU {
                 render.setColor(Color.BLACK);
                 render.drawString(xLabel, (int) pxr - labelWidthx / 2 , (int) y1 - (int) margem() + metrics.getHeight() +5 );
             }
-            w =  w + auxFixa;
-            x++;
         }
+
 
         //Y
         y = getMinValue();
-        //y = 1;
         for (int j = 0; j < 11; j++) {
 
             mapeamentoY();
@@ -237,9 +225,7 @@ public class ImageU {
                 render.setColor(Color.BLACK);
                 render.drawString(yLabel, (int) x0 + (int) margem() - labelWidthy - 10,(int) pyr + metrics.getHeight()/2);
             }
-            z++;
             y += ((getMaxValue() - getMinValue()) / 10);
-            //y++;
 
         }
         render.setStroke(oldStroke);
@@ -247,14 +233,11 @@ public class ImageU {
 
     public void criaLinhasPontos() {
         pontos = new ArrayList<>();
-        valoresSaida();
-        System.out.println(valoresSaida());
-
         porcentagem = 0.1;
 
         oix = 0;
         ofx = auxList.size();
-        dix = (int) (x0 + margem() + 1);
+        dix = (int) (x0 + margem() );
         dfx = x1;
 
         oiy = getMaxValue();
@@ -266,17 +249,18 @@ public class ImageU {
             x = i;
             mapeamentoX();
 
-            // System.out.println(Prx);
+
             for (int j = 0; j < auxList.size(); j++) {
                 y = auxList.get(i);
                 mapeamentoY();
-                pontos.add(new Point((int) pxr, (int) pyr));
             }
+            pontos.add(new Point((int) pxr, (int) pyr));
+
         }
 
-        for (int a = 0; a < pontos.size() - 1; a++) {
+        for (int j = 0; j < pontos.size() - 1; j++) {
             render.setColor(Color.blue);
-            render.drawLine(pontos.get(a).x, pontos.get(a).y, pontos.get(a + 1).x, pontos.get(a + 1).y);
+            render.drawLine(pontos.get(j).x, pontos.get(j).y, pontos.get(j + 1).x, pontos.get(j + 1).y);
         }
     }
 
@@ -318,15 +302,15 @@ public class ImageU {
     }
 
     public void criaImagem() {
+        valoresSaida();
 
         background();
         whiteBrackground();
-        criaLinhasPontos();
         criaGrade();
         eixoXY();
+        criaLinhasPontos();
         criaPontos();
         saveImage();
-
     }
 
 }
