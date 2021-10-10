@@ -42,7 +42,7 @@ public class PixelCalc {
         return Pixels_height;
     }
 
-    public int proporcao() {
+    public int setProportion() {
         if (Pixels_height != 0) {
             Pixels_width = (Pixels_height / Ratio_height) * Ratio_width;
             return Pixels_width;
@@ -58,7 +58,7 @@ public class PixelCalc {
         }
     }
 
-    public String Dados (){
+    public String setDate(){
         if(Pixels_width == null && Pixels_height == null)
         defaultImage();
         System.out.println("Ratio " + getRatio_width() + ":" + getRatio_height());

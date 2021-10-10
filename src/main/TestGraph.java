@@ -14,11 +14,11 @@ public class TestGraph {
 //        pc.setPixelsHeight(600);
 //        pc.setPixelsWidth(600);
 //        pc.setPixelsHeight(900);
-//        pc.Dados();
+//        pc.setDate();
 //                pc.setRatio(16,9);
 //                pc.setPixelsHeight(800);
-//        pc.proporcao();
-                pixelcalc.Dados();
+//        pc.setProportion();
+                pixelcalc.setDate();
                 imageu.showImage();
 
 
