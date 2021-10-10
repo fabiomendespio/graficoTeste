@@ -1,7 +1,6 @@
 package Util;
 
 import Util.PixelCalc;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -10,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.awt.RenderingHints;
 
 
 public class ImageU {
@@ -82,6 +82,7 @@ public class ImageU {
         }
         report = new BufferedImage(pixelcalc.getPixels_width(), pixelcalc.getPixels_height(), BufferedImage.TYPE_INT_RGB);
         render = (Graphics2D) report.getGraphics();
+        render.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         render.setColor(Color.lightGray);
         render.fillRect(0, 0, report.getWidth(), report.getHeight());
     }
@@ -115,14 +116,39 @@ public class ImageU {
         auxList = new ArrayList<>();
         Random random = new Random();
 
-        eixoX = 20;
+        eixoX = 10;
         eixoY = 10;
-        double v = 3;
-        for (int i = 0; i < eixoX; i++) {
-            v+=Math.abs(random.nextDouble())/10.0;
+        double v = 2;
+
+//        for (int i = 0; i < eixoX; i++) {
+//            v+=Math.abs(random.nextDouble())/10.0;
 //            auxList.add((random.nextDouble() * eixoY));
-            auxList.add(v);
-        }
+
+//          auxList.add(v);
+
+        //       }
+
+        auxList.add(3.0);
+        auxList.add(2.0);
+        auxList.add(4.0);
+        auxList.add(7.0);
+        auxList.add(2.0);
+        auxList.add(5.0);
+        auxList.add(3.0);
+        auxList.add(4.0);
+        auxList.add(4.0);
+        auxList.add(1.0);
+        auxList.add(3.0);
+        auxList.add(2.0);
+        auxList.add(4.0);
+        auxList.add(7.0);
+        auxList.add(2.0);
+        auxList.add(5.0);
+        auxList.add(3.0);
+        auxList.add(4.0);
+        auxList.add(4.0);
+        auxList.add(1.0);
+
         return auxList;
     }
 
@@ -153,12 +179,12 @@ public class ImageU {
         porcentagem = 0.1;
 
         oix = 0;
-        ofx = 10;
+        ofx = auxList.size()/2;
         dix = (int) (x0 + margem());
         dfx = x1;
 
-        oiy = 10;
-        ofy = 0;
+        oiy = getMaxValue();
+        ofy = getMinValue();
         diy = y0;
         dfy = (int) (y1 - margem());
 
@@ -169,7 +195,7 @@ public class ImageU {
         w = auxFixa;
 
         //X
-        x = 1;
+        x = 0;
         for (int i = 0; i < auxList.size(); i++) {
             mapeamentoX();
             for (int a = 0; a < auxList.size() ; a++) {
@@ -181,27 +207,40 @@ public class ImageU {
                 } else {
                     xLabel = Math.round(w * 100.0) / 100.0 + "";
                 }
+                FontMetrics metrics = render.getFontMetrics();
+                int labelWidthx = metrics.stringWidth(xLabel);
 
                 render.setColor(Color.BLACK);
-                render.drawString(xLabel, (int) pxr - 5, (int) y1 - (int) margem() + 15);
+                render.drawString(xLabel, (int) pxr - labelWidthx / 2 , (int) y1 - (int) margem() + metrics.getHeight() +5 );
             }
             w =  w + auxFixa;
             x++;
         }
 
         //Y
-        y = 1;
-        for (int j = 0; j < 10; j++) {
+        y = getMinValue();
+        //y = 1;
+        for (int j = 0; j < 11; j++) {
+
             mapeamentoY();
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 11; i++) {
                 render.setColor(Color.lightGray);
                 render.drawLine((int) (x0 + margem()), (int) pyr, (int) x1, (int) pyr);
-                yLabel = z + "";
+
+
+                yLabel = Math.round(y * 100.00) / 100.00 + "";
+
+
+                FontMetrics metrics = render.getFontMetrics();
+                int labelWidthy = metrics.stringWidth(yLabel);
+
                 render.setColor(Color.BLACK);
-                render.drawString(yLabel, (int) x0 + (int) margem() - 20,(int) pyr + 5);
+                render.drawString(yLabel, (int) x0 + (int) margem() - labelWidthy - 10,(int) pyr + metrics.getHeight()/2);
             }
             z++;
-            y++;
+            y += ((getMaxValue() - getMinValue()) / 10);
+            //y++;
+
         }
         render.setStroke(oldStroke);
     }
@@ -214,13 +253,13 @@ public class ImageU {
         porcentagem = 0.1;
 
         oix = 0;
-        ofx = auxList.size() - 1;
+        ofx = auxList.size();
         dix = (int) (x0 + margem() + 1);
         dfx = x1;
 
         oiy = getMaxValue();
         ofy = getMinValue();
-        diy = y0 ;
+        diy = y0;
         dfy = (int) (y1 - margem());
 
         for (int i = 0; i < auxList.size(); i++) {
@@ -246,7 +285,7 @@ public class ImageU {
         porcentagem = 0.1;
 
         oix = 0;
-        ofx = auxList.size() - 1;
+        ofx = auxList.size() ;
         dix = (int) (x0 + margem() );
         dfx = x1 ;
 
@@ -265,12 +304,10 @@ public class ImageU {
                 mapeamentoY();
 
                 render.setColor(Color.RED);
-                render.fillRect((int) pxr, (int) pyr, 5, 5);
+                render.fillOval((int) pxr - 4, (int) pyr - 4, 8, 8);
             }
         }
     }
-
-
 
     public void saveImage() {
         try {
@@ -285,10 +322,9 @@ public class ImageU {
         background();
         whiteBrackground();
         criaLinhasPontos();
-//        criaPontos();
         criaGrade();
-
         eixoXY();
+        criaPontos();
         saveImage();
 
     }
