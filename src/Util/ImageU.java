@@ -125,12 +125,13 @@ public class ImageU {
         auxList.add(2.0);
         auxList.add(4.0);
         auxList.add(7.0);
-        auxList.add(2.0);
+        auxList.add(1.0);
         auxList.add(5.0);
         auxList.add(3.0);
         auxList.add(2.0);
         auxList.add(4.0);
         auxList.add(7.0);
+
         auxList.add(3.0);
         auxList.add(2.0);
         auxList.add(4.0);
@@ -140,13 +141,36 @@ public class ImageU {
         auxList.add(3.0);
         auxList.add(2.0);
         auxList.add(4.0);
-        auxList.add(7.0);
+        auxList.add(9.0);
 
         return auxList;
     }
 
-    public void xMapping() {
+    public double xMapping_array() {
         pxr = ((x - oix) * (dfx - dix) / (ofx - oix)) + dix;
+        return pxr;
+    }
+
+    public double xMapping_plot() {
+        pxr = (x  * (ofx - oix)  / (dfx - dix)) + dix;
+        return pxr;
+    }
+
+    public void setGrid_subtitle(){
+            render.setColor(Color.lightGray);
+            render.drawLine((int) pxr, (int) (y1 - label()), (int) pxr, (int) y0);
+
+            if ((double) auxList.size() % ofx == 0) {
+                xLabel = Math.round(x) + "";
+            } else {
+                xLabel = Math.round(x * 100.0) / 100.0 + "";
+            }
+
+            FontMetrics metrics = render.getFontMetrics();
+            int labelWidth_x = metrics.stringWidth(xLabel);
+
+            render.setColor(Color.BLACK);
+            render.drawString(xLabel, (int) pxr - labelWidth_x / 2 , (int) y1 - (int) label() + metrics.getHeight() + 5);
     }
 
     public void yMapping() {
@@ -162,6 +186,7 @@ public class ImageU {
     }
 
     public void setGrid() {
+
         Stroke oldStroke = render.getStroke();
         float[] dash = {2f, 0f, 2f};
         BasicStroke bs = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1.0f, dash, 2f);
@@ -180,25 +205,38 @@ public class ImageU {
         dfy = (int) (y1 - label());
 
         //X
-        for (int i = 0; i < auxList.size(); i++) {
-            x = i;
-            xMapping();
-            for (int j = 0; j < auxList.size() ; j++) {
-                render.setColor(Color.lightGray);
-                render.drawLine((int) pxr, (int) (y1 - label()), (int) pxr, (int) y0);
+//        if (auxList.size() < (dfx - dix)) {
+//            for (int i = 0; i < auxList.size(); i++) {
+//                x = i;
+//                xMapping_array();
+//                setGrid_subtitle();
+//            }
+//        } else {
+//            for (int i = 0; i < (dfx - dix); i++) {
+//                x = i;
+//                xMapping_plot();
+//            }
+//            setGrid_subtitle();
+//        }
+//            xMapping_plot();
+//            System.out.println(xMapping_plot());
+//            System.out.println(valuesSaida());
+            x = 0;
+            if (auxList.size() > 10){
+                 for (int i = 0; i <= auxList.size(); i++) {
 
-                if ((double) auxList.size() % ofx == 0) {
-                    xLabel = Math.round(x) + "";
-                } else {
-                    xLabel = Math.round(x * 100.0) / 100.0 + "";
+                    xMapping_array();
+                    x++;
+                    if (x % 2 == 0)
+                        setGrid_subtitle();
                 }
-                FontMetrics metrics = render.getFontMetrics();
-                int labelWidth_x = metrics.stringWidth(xLabel);
+            }else
+                for (int i = 0; i <= auxList.size(); i++) {
+                    x = i;
+                    xMapping_array();
+                    setGrid_subtitle();
+                }
 
-                render.setColor(Color.BLACK);
-                render.drawString(xLabel, (int) pxr - labelWidth_x / 2 , (int) y1 - (int) label() + metrics.getHeight() +5 );
-            }
-        }
 
 
         //Y
@@ -206,7 +244,7 @@ public class ImageU {
         for (int j = 0; j < 11; j++) {
 
             yMapping();
-            for (int i = 0; i < 11; i++) {
+
                 render.setColor(Color.lightGray);
                 render.drawLine((int) (x0 + label()), (int) pyr, (int) x1, (int) pyr);
 
@@ -219,7 +257,7 @@ public class ImageU {
 
                 render.setColor(Color.BLACK);
                 render.drawString(yLabel, (int) x0 + (int) label() - labelWidth_y - 10,(int) pyr + metrics.getHeight()/2);
-            }
+
             y += ((getMaxValue() - getMinValue()) / 10);
 
         }
@@ -240,15 +278,13 @@ public class ImageU {
         diy = y0;
         dfy = (int) (y1 - label());
 
+
         for (int i = 0; i < auxList.size(); i++) {
             x = i;
-            xMapping();
-
-
-            for (int j = 0; j < auxList.size(); j++) {
-                y = auxList.get(i);
-                yMapping();
-            }
+            xMapping_array();
+//            if (i < auxList.size())
+            y = auxList.get(i);
+            yMapping();
             pointList.add(new Point((int) pxr, (int) pyr));
 
         }
@@ -264,7 +300,7 @@ public class ImageU {
         percentage = 0.1;
 
         oix = 0;
-        ofx = auxList.size() ;
+        ofx = auxList.size();
         dix = (int) (x0 + label() );
         dfx = x1 ;
 
@@ -275,16 +311,15 @@ public class ImageU {
 
         for (int i = 0; i < auxList.size(); i++) {
             x = i;
-            xMapping();
+            xMapping_array();
 
-
-            for (int j = 0; j < auxList.size(); j++) {
+//            if (i < auxList.size())
                 y = auxList.get(i);
                 yMapping();
 
                 render.setColor(Color.RED);
                 render.fillOval((int) pxr - 4, (int) pyr - 4, 8, 8);
-            }
+
         }
     }
 
